@@ -1,6 +1,6 @@
-# Node & Express API Starter For 2022 & 2023
+# Bit.ly node clone by Afi
 
-_"A minimally opinionated node & express starter for 2022 & 2023"_
+_"Bit.ly node clone"_
 
 This template is also used by my utility create-my-express on npm.
 
@@ -27,4 +27,5 @@ A `POST` request to `/` will echo any json sent in the request body.
 ## Help out
 
 Feedback and contributions are very welcome.
+
 # set-2023-bitly-node
