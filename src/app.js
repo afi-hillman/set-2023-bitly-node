@@ -9,6 +9,7 @@ import root from "./routes/root";
 import initializePostgresConnection from "./database/connection";
 import dbInit from "./database/init";
 import apiRoutes from "./routes/api";
+import session from "express-session";
 
 const app = express();
 
@@ -24,8 +25,19 @@ app.use(helmet());
 app.use(morgan("tiny"));
 
 // Initialize database
-dbInit();
-
+if (config.nodeEnv !== "test") {
+  dbInit();
+}
+const oneDay = 1000 * 60 * 60 * 24;
+// Apply session
+app.use(
+  session({
+    secret: config.sessionSecretToken,
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+  })
+);
 // Apply routes before error handling
 app.use("/", root);
 app.use("/api", apiRoutes);

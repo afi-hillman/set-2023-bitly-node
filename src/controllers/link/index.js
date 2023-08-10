@@ -1,8 +1,10 @@
+import { DATE } from "sequelize";
 import Link from "../../database/model/Link";
 
-function create(req, res) {
+async function create(req, res) {
   const { slug, link } = req.body;
-  Link.create({ slug, link, owner: 1 })
+  const userId = req.session.auth;
+  Link.create({ slug, link, owner: userId })
     .then(function (data) {
       res.status(200).json({ message: "link created", data });
     })
@@ -11,12 +13,13 @@ function create(req, res) {
     });
 }
 
-function update(req, res) {
-  const { id, slug, link } = req.body;
+async function update(req, res) {
+  const { slug, link } = req.body;
+  const userId = req.session.auth;
   Link.update(
     { link },
     {
-      where: { id },
+      where: { slug, owner: userId },
     }
   )
     .then(function (data) {
@@ -28,8 +31,8 @@ function update(req, res) {
     });
 }
 
-function listAllByUserId(req, res) {
-  const userId = req.params.userId;
+async function listAllByUserId(req, res) {
+  const userId = req.session.auth;
   Link.findAndCountAll({
     attributes: ["slug", "link", "visit_counts"],
     order: [["created_at", "DESC"]],
@@ -50,7 +53,7 @@ function listAllByUserId(req, res) {
     });
 }
 
-function redirect(req, res) {
+async function redirect(req, res) {
   const slug = req.params.slug;
   Link.findOne({
     where: {
@@ -88,6 +91,25 @@ function redirect(req, res) {
     });
 }
 
-const linkController = { create, update, listAllByUserId, redirect };
+async function deleteLink(req, res) {
+  const { slug } = req.body;
+  const userId = req.session.auth;
+  try {
+    await Link.destroy({
+      where: { slug, owner: userId },
+    });
+    res.status(200).json({ link: "successfully deleted!" });
+  } catch (error) {
+    res.status(500).json({ link: "failed to delete" });
+  }
+}
+
+const linkController = {
+  create,
+  update,
+  listAllByUserId,
+  redirect,
+  deleteLink,
+};
 
 export default linkController;

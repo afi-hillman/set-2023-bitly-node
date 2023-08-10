@@ -22,6 +22,8 @@ const config = {
     password: process.env["POSTGRES_PASSWORD"],
   },
 
+  sessionSecretToken: process.env["SESSION_SECRET_TOKEN"],
+
   clientOrigins: {
     development: process.env["DEV_ORIGIN"] ?? "*",
     production: process.env["PROD_ORIGIN"] ?? "none",

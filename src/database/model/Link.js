@@ -29,6 +29,7 @@ const Link = postgresConnection.define(
 
 Link.belongsTo(User, {
   foreignKey: "owner",
+  type: DataTypes.INTEGER,
 });
 
 export default Link;
