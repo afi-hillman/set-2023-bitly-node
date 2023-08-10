@@ -47,4 +47,56 @@ describe("test link controller", function () {
     expect(result.statusCode).toEqual(500);
     expect(result.body.error.errors[0].message).toBe("slug must be unique");
   });
+  // Positive test case
+  test("LIST ALL links success", async function () {
+    await authSession.post("/api/login").send({
+      identifier: "afi",
+      password: "password1",
+    });
+    const result = await authSession.get("/api/link");
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.message).toBe("links are found!");
+  });
+  // // Positive test case
+  // test("REDIRECT link success", async function () {
+  //   await authSession.post("/api/login").send({
+  //     identifier: "afi",
+  //     password: "password1",
+  //   });
+  //   const result = await authSession.get("/abcd2020");
+  //   expect(result.statusCode).toEqual(200);
+  // });
+  // Positive test case
+  test("UPDATE link success", async function () {
+    await authSession.post("/api/login").send({
+      identifier: "afi",
+      password: "password1",
+    });
+    const result = await authSession.put("/api/link").send({
+      slug: "testLink",
+      link: "https://youtube.com",
+    });
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.message).toBe("link updated!");
+  });
+  // Positive test case
+  test("DELETE link success", async function () {
+    await authSession.post("/api/login").send({
+      identifier: "afi",
+      password: "password1",
+    });
+    const result = await authSession.delete("/api/link").send({
+      slug: "testLink",
+    });
+    expect(result.statusCode).toEqual(200);
+    expect(result.body.link).toBe("successfully deleted!");
+  });
+  // Negative test case
+  test("DELETE link fail, no auth", async function () {
+    const result = await supertest(app).delete("/api/link").send({
+      slug: "testLink",
+    });
+    expect(result.statusCode).toEqual(401);
+    expect(result.body.message).toBe("unauthorized!");
+  });
 });

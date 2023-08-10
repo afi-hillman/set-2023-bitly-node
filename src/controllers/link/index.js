@@ -40,10 +40,8 @@ async function listAllByUserId(req, res) {
       owner: userId,
     },
   })
-    .then(function ({ count, rows }) {
-      res
-        .status(200)
-        .json({ message: `${count} links are found!`, data: rows });
+    .then(function ({ rows }) {
+      res.status(200).json({ message: "links are found!", data: rows });
     })
     .catch(function (error) {
       console.log(error);
