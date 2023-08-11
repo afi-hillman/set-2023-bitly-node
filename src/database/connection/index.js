@@ -7,7 +7,16 @@ export const postgresConnection = new Sequelize(database, user, password, {
   host: host,
   port: port,
   dialect: "postgres",
-  logging: config.nodeEnv === "development",
+  logging: config.nodeEnv === "production",
+  dialectOptions: {
+    ssl:
+      config.nodeEnv === "production"
+        ? {
+            require: true,
+            rejectUnauthorized: false,
+          }
+        : false,
+  },
 });
 
 export default postgresConnection;
