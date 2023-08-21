@@ -28,16 +28,9 @@ app.use(morgan("tiny"));
 if (config.nodeEnv !== "test") {
   dbInit();
 }
-const oneDay = 1000 * 60 * 60 * 24;
+
 // Apply session
-app.use(
-  session({
-    secret: config.sessionSecretToken,
-    saveUninitialized: true,
-    cookie: { maxAge: oneDay },
-    resave: false,
-  })
-);
+
 // Apply routes before error handling
 app.use("/", root);
 app.use("/api", apiRoutes);

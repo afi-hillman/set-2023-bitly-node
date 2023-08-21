@@ -37,15 +37,22 @@ async function login(req, res) {
   if (!user) {
     res.status(400).json({ message: "Wrong credentials input!" });
   }
+  const generateAccessToken = (userData) => {
+    return jwt.sign(userData, config.jwtSecretToken);
+  };
   // compare hashed password
   bcrypt.compare(password, user.password, (error, bcryptRes) => {
     if (bcryptRes) {
-      req.session.auth = user.id;
+      const token = generateAccessToken({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      });
       const { password, ...userDataWithoutPassword } = user.get();
       const serverRes = {
         message: "Login successful!",
         data: userDataWithoutPassword,
-        session: req.session,
+        jwt: token,
       };
       res.status(200).json(serverRes);
     } else {

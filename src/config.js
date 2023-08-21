@@ -23,6 +23,7 @@ const config = {
   },
 
   sessionSecretToken: process.env["SESSION_SECRET_TOKEN"],
+  jwtSecretToken: process.env["JWT_SECRET_TOKEN"],
 
   clientOrigins: {
     development: process.env["DEV_ORIGIN"] ?? "*",

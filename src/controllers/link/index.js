@@ -1,9 +1,10 @@
 import { DATE } from "sequelize";
 import Link from "../../database/model/Link";
+import jwt from "jsonwebtoken";
 
 async function create(req, res) {
   const { slug, link } = req.body;
-  const userId = req.session.auth;
+  const userId = req.user.id;
   Link.create({ slug, link, owner: userId })
     .then(function (data) {
       res.status(200).json({ message: "link created", data });
@@ -15,7 +16,7 @@ async function create(req, res) {
 
 async function update(req, res) {
   const { slug, link } = req.body;
-  const userId = req.session.auth;
+  const userId = req.user.id;
   Link.update(
     { link },
     {
@@ -32,7 +33,7 @@ async function update(req, res) {
 }
 
 async function listAllByUserId(req, res) {
-  const userId = req.session.auth;
+  const userId = req.user.id;
   Link.findAndCountAll({
     attributes: ["slug", "link", "visit_counts"],
     order: [["created_at", "DESC"]],
@@ -91,7 +92,7 @@ async function redirect(req, res) {
 
 async function deleteLink(req, res) {
   const { slug } = req.body;
-  const userId = req.session.auth;
+  const userId = req.user.id;
   try {
     await Link.destroy({
       where: { slug, owner: userId },
