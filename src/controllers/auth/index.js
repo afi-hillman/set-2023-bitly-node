@@ -3,6 +3,7 @@ import query from "../../database";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 import { Op } from "sequelize";
+import jwt from "jsonwebtoken";
 
 function register(req, res) {
   const { username, email, password } = req.body;
