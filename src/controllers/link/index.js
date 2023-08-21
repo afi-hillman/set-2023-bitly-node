@@ -1,6 +1,7 @@
 import { DATE } from "sequelize";
 import Link from "../../database/model/Link";
 import jwt from "jsonwebtoken";
+import config from "../../config";
 
 async function create(req, res) {
   const { slug, link } = req.body;

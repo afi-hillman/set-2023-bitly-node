@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
+import config from "../../config";
 
 function register(req, res) {
   const { username, email, password } = req.body;
