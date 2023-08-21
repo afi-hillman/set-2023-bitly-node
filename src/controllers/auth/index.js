@@ -60,8 +60,6 @@ async function login(req, res) {
 }
 
 function logout(req, res) {
-  const session = req.session.destroy();
-  console.log(session);
   res.status(200).json({ message: "logout successful!" });
 }
 
