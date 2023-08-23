@@ -30,21 +30,37 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  const { slug, link } = req.body;
+  const { link } = req.body;
+  const slug = req.params.slug;
   const userId = req.user.id;
-  Link.update(
-    { link },
-    {
-      where: { slug, owner: userId },
-    }
-  )
-    .then(function (data) {
-      res.status(200).json({ message: "link updated!", data: data.dataValues });
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.status(500).json({ message: "error in updating link!", data: error });
+
+  const existingLink = await Link.findOne({
+    where: { slug: slug, owner: userId },
+  });
+
+  if (!existingLink) {
+    return res.status(404).json({
+      message: "Link not found or you don't have permission to update it",
     });
+  }
+
+  try {
+    const [affectedRowsCount, affectedRows] = await Link.update(
+      { link },
+      { where: { slug: slug, owner: userId }, returning: true }
+    );
+
+    if (affectedRowsCount === 0) {
+      return res.status(500).json({ message: "Failed to update link" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Link updated!", data: affectedRows[0].dataValues });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error in updating link!", data: error });
+  }
 }
 
 async function listAllByUserId(req, res) {
@@ -106,15 +122,30 @@ async function redirect(req, res) {
 }
 
 async function deleteLink(req, res) {
-  const { slug } = req.body;
+  console.log(req.params.slug);
+  const slug = req.params.slug;
   const userId = req.user.id;
+  if (!slug) {
+    return res.status(400).json({ error: "Slug is required" });
+  }
+
   try {
-    await Link.destroy({
-      where: { slug, owner: userId },
+    const link = await Link.findOne({
+      where: { slug: slug, owner: userId },
     });
-    res.status(200).json({ link: "successfully deleted!" });
+
+    if (!link) {
+      return res.status(404).json({
+        error: "Link not found or you don't have permission to delete it",
+      });
+    }
+
+    await link.destroy();
+
+    res.status(200).json({ message: "Link successfully deleted" });
   } catch (error) {
-    res.status(500).json({ link: "failed to delete" });
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete link" });
   }
 }
 

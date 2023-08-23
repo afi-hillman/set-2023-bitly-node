@@ -20,9 +20,9 @@ apiRoutes.post(
   validate,
   linkController.create
 );
-apiRoutes.put("/link", isAuthenticated, linkController.update);
+apiRoutes.put("/link/:slug", isAuthenticated, linkController.update);
 apiRoutes.get("/link", isAuthenticated, linkController.listAllByUserId);
-apiRoutes.delete("/link", isAuthenticated, linkController.deleteLink);
+apiRoutes.delete("/link/:slug", isAuthenticated, linkController.deleteLink);
 
 apiRoutes.get("/protected", isAuthenticated, function protectedRoute(req, res) {
   const user = req.user;
