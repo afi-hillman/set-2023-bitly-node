@@ -24,4 +24,9 @@ apiRoutes.put("/link", isAuthenticated, linkController.update);
 apiRoutes.get("/link", isAuthenticated, linkController.listAllByUserId);
 apiRoutes.delete("/link", isAuthenticated, linkController.deleteLink);
 
+apiRoutes.get("/protected", isAuthenticated, function protectedRoute(req, res) {
+  const user = req.user;
+  res.status(200).json({ message: "authorized!", user });
+});
+
 export default apiRoutes;

@@ -25,7 +25,7 @@ function register(req, res) {
     })
     .catch(function (error) {
       console.log(error);
-      res.status(400).json({ message: "an error occured!", data: error });
+      res.status(403).json({ message: "an error occured!", data: error });
     });
 }
 async function login(req, res) {
@@ -37,7 +37,7 @@ async function login(req, res) {
     },
   });
   if (!user) {
-    res.status(400).json({ message: "Wrong credentials input!" });
+    res.status(403).json({ message: "Wrong credentials input!" });
   }
   const generateAccessToken = (userData) => {
     return jwt.sign(userData, config.jwtSecretToken);
