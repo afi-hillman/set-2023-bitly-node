@@ -3,10 +3,24 @@ import Link from "../../database/model/Link";
 import jwt from "jsonwebtoken";
 import config from "../../config";
 
+function generateRandomSlug(length) {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let slug = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    slug += charset[randomIndex];
+  }
+
+  return slug;
+}
+
 async function create(req, res) {
-  const { slug, link } = req.body;
+  const { link } = req.body;
   const userId = req.user.id;
-  Link.create({ slug, link, owner: userId })
+  const randomSlug = generateRandomSlug(10);
+  Link.create({ slug: randomSlug, link, owner: userId })
     .then(function (data) {
       res.status(200).json({ message: "link created", data });
     })
